@@ -1,4 +1,111 @@
+# DOUBLY LINKEDLIST
+#include <stdio.h>
+#include <stdlib.h>
+struct Node {
+    int data;
+    struct Node* prev;
+    struct Node* next;
+};
+struct Node* head = NULL;
+void insertAtFirst(int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed.\n");
+        return;
+    }
+    newNode->data = value;
+    newNode->prev = NULL;
+    newNode->next = head;
 
+    if (head != NULL) {
+        head->prev = newNode;
+    }
+    head = newNode;
+}
+void insertAtLast(int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed.\n");
+        return;
+    }
+    newNode->data = value;
+    newNode->next = NULL;
+
+    if (head == NULL) {
+        newNode->prev = NULL;
+        head = newNode;
+        return;
+    }
+
+    struct Node* temp = head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+
+    temp->next = newNode;
+    newNode->prev = temp;
+}
+void insertAtPosition(int value, int position) {
+    if (position < 1) {
+        printf("Invalid position.\n");
+        return;
+    }
+
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed.\n");
+        return;
+    }
+    newNode->data = value;
+    if (position == 1) {
+        newNode->prev = NULL;
+        newNode->next = head;
+        if (head != NULL)
+            head->prev = newNode;
+        head = newNode;
+        return;
+    }
+    struct Node* temp = head;
+    int i;
+    for (i = 1; temp != NULL && i < position - 1; i++) {
+        temp = temp->next;
+    }
+    if (temp == NULL) {
+        printf("Position out of bounds.\n");
+        free(newNode);
+        return;
+    }
+    newNode->next = temp->next;
+    newNode->prev = temp;
+
+    if (temp->next != NULL)
+        temp->next->prev = newNode;
+		temp->next = newNode;
+}
+void deleteAtFirst() {
+    if (head == NULL) {
+        printf("List is empty.\n");
+        return;
+    }
+    struct Node* temp = head;
+    head = head->next;
+    if (head != NULL)
+        head->prev = NULL;
+    free(temp);
+    printf("First node deleted.\n");
+}
+void deleteAtLast() {
+    if (head == NULL) {
+        printf("List is empty.\n");
+        return;
+    }
+    if (head->next == NULL) {
+        free(head);
+        head = NULL;
+        printf("Last node deleted.\n");
+        return;
+    }
+    struct Node* temp = head;
     while (temp->next != NULL) {
         temp = temp->next;
     }
@@ -105,3 +212,4 @@ int main() {
     } while (choice != 8);
     return 0;
 }
+
